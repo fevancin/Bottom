@@ -78,7 +78,23 @@ def compute_subsumptions():
                     continue
                 if not all_less_operators_are_satisfiable: # check for impossibility regarding operators satisfiability
                     continue
-                if len(less_day[care_unit_name]) == 1 or is_program_satisfiable(input_program):
+                if len(less_day[care_unit_name]) == 1:
+                    less_day_names.add(less_day_name) # add the subsumption if a match exists
+                    if less_day_name in care_unit_subsumptions: # relation transitivity check
+                        less_day_names.update(care_unit_subsumptions[less_day_name])
+                less_operator_list = list(less_day[care_unit_name].values())
+                there_is_overlap = False
+                for index1 in range(len(less_operator_list) - 1):
+                    for index2 in range(index1 + 1, len(less_operator_list)):
+                        if less_operator_list[index1]['start'] <= less_operator_list[index2]['start'] and less_operator_list[index1]['start'] + less_operator_list[index1]['duration'] > less_operator_list[index2]['start'] + less_operator_list[index2]['duration']:
+                            there_is_overlap = True
+                            break
+                        if less_operator_list[index2]['start'] <= less_operator_list[index1]['start'] and less_operator_list[index2]['start'] + less_operator_list[index2]['duration'] > less_operator_list[index1]['start'] + less_operator_list[index1]['duration']:
+                            there_is_overlap = True
+                            break
+                    if there_is_overlap:
+                        break
+                if not there_is_overlap or is_program_satisfiable(input_program):
                     less_day_names.add(less_day_name) # add the subsumption if a match exists
                     if less_day_name in care_unit_subsumptions: # relation transitivity check
                         less_day_names.update(care_unit_subsumptions[less_day_name])
