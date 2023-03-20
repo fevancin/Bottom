@@ -49,6 +49,8 @@ def compute_subsumptions():
     for care_unit_name in get_care_unit_names(): # for each care unit
         care_unit_subsumptions = dict()
         for more_day_name, more_day in operators.items(): # for each more day
+            if len(more_day) == 0:
+                continue
             less_day_names = set()
             more_total_duration = 0
             more_program = ""
@@ -57,6 +59,8 @@ def compute_subsumptions():
                 more_total_duration += more_operator['duration'] # sum the operators' duration
             for less_day_name, less_day in operators.items(): # for each less day
                 if more_day_name == less_day_name: # symmetric check
+                    continue
+                if len(less_day) == 0:
                     continue
                 if less_day_name in less_day_names: # if already in the less list
                     continue
