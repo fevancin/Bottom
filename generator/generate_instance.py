@@ -133,6 +133,8 @@ def generate_necessities():
         service_indexes = random.sample(range(configuration['service']['number']), necessity_size)
         service_necessities = dict()
         for other_service_index in sorted(service_indexes):
+            if other_service_index == service_index:
+                continue
             start = random.randint(configuration['necessity']['start']['min'], configuration['necessity']['start']['max'])
             duration = random.randint(configuration['necessity']['duration']['min'], configuration['necessity']['duration']['max'])
             service_necessities[f"{prefixes['service']}{other_service_index:02}"] = [
