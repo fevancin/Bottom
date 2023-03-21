@@ -42,6 +42,6 @@
 :- do(Patient, Service, _, _, _), #count { Packet : packet_has_service(Packet, Service), packet_done(Patient, Packet) } = 0.
 
 % try to maximize the number of packets done, weighted by the patient priority
-:~ packet_done(Patient, Packet), patient_has_priority(Patient, Priority). [-10@Priority, Patient, Packet]
+:~ packet_done(Patient, Packet), patient_has_priority(Patient, Priority). [-10@Priority,Patient,Packet]
 
 #show do/5.
