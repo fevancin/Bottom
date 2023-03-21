@@ -14,6 +14,8 @@ with open("filenames.json", "r") as file:
     filenames = json.loads(file.read())
 
 # reading of the generator configuration file
+if not os.path.isdir(filenames['generator']['folder']):
+    raise FileNotFoundError("The generator folder was not found")
 os.chdir(filenames['generator']['folder'])
 if not os.path.isfile(filenames['generator']['configuration']):
     raise FileNotFoundError("The configuration file for the generation process was not found")

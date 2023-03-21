@@ -1,1 +1,5 @@
-*.json
+cores/*.json
+instance/*.json
+master/*.json
+subproblem/*.json
+subsumptions/*.json
