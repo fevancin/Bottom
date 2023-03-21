@@ -44,7 +44,6 @@ for day_name, daily_requests in requests.items():
     service_names = set()
     packet_names = set()
     care_unit_names = set()
-    operator_names = set()
 
     with open(filenames['subproblem']['ASP_input_program'], "w") as file:
         for patient_name, patient in daily_requests.items():
@@ -60,7 +59,6 @@ for day_name, daily_requests in requests.items():
     service_names = sorted(service_names)
     packet_names = sorted(packet_names)
     care_unit_names = sorted(care_unit_names)
-    operator_names = sorted(operator_names)
 
     with open(filenames['subproblem']['ASP_input_program'], "a") as file:
         for patient_name in patient_names:
