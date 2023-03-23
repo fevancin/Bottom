@@ -39,6 +39,9 @@ os.chdir(os.path.join("..", filenames['subproblem']['folder']))
 results = dict()
 
 for day_name, daily_requests in requests.items():
+    if len(daily_requests) == 0:
+        continue
+    
     # accumulators for each necessary name (no useless info in the input ASP file)
     patient_names = set()
     service_names = set()
@@ -93,17 +96,18 @@ for day_name, daily_requests in requests.items():
     daily_scheduled_services = []
     with open(filenames['subproblem']['ASP_output_program'], "r") as file:
         rows = file.read().split("Answer")[-1].split("\n")[1].split("do(")[1:]
-        rows[-1] += " "
-        for row in rows:
-            tokens = row.split(",")
-            tokens[4] = tokens[4][:-2]
-            daily_scheduled_services.append({
-                'patient': tokens[0],
-                'service': tokens[1],
-                'operator': tokens[2],
-                'care_unit': tokens[3],
-                'start': int(tokens[4])
-            })
+        if len(rows) > 0:
+            rows[-1] += " "
+            for row in rows:
+                tokens = row.split(",")
+                tokens[4] = tokens[4][:-2]
+                daily_scheduled_services.append({
+                    'patient': tokens[0],
+                    'service': tokens[1],
+                    'operator': tokens[2],
+                    'care_unit': tokens[3],
+                    'start': int(tokens[4])
+                })
 
     # list all not satisfied packets
     not_scheduled_packets = dict()
