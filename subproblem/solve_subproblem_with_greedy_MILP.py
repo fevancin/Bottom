@@ -3,9 +3,8 @@ import json
 from datetime import datetime
 
 from pyomo.environ import ConcreteModel, SolverFactory, maximize, TerminationCondition, value
-from pyomo.environ import Set, Var, BooleanVar, Objective, Constraint, LogicalConstraint, land
-from pyomo.environ import Boolean, NonNegativeIntegers, summation
-from pyomo.gdp import Disjunction
+from pyomo.environ import Set, Var, Objective, Constraint
+from pyomo.environ import Boolean, NonNegativeIntegers
 
 if __name__ == "__main__":
     start_time = datetime.now()
