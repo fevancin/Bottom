@@ -47,7 +47,7 @@ with open(filenames['master']['ASP_input_program'], "w") as file:
                     for service_name in full_input['abstract_packet'][packet_name]:
                         service_names.add(service_name)
                         care_unit_names.add(full_input['services'][service_name]['careUnit'])
-                    file.write(f"patient_requests_protocol({patient_name}, {protocol_name}, {iteration_name}, {packet_name}, {protocol_packet['start_date'] + initial_offset}, {protocol_packet['existence'][1] + initial_offset}, {protocol_packet['freq']}, {protocol_packet['tolerance']}).\n")
+                    file.write(f"patient_requests_protocol({patient_name}, {protocol_name}, {iteration_name}, {packet_name}, {protocol_packet['start_date'] + initial_offset}, {protocol_packet['existence'][0] + initial_offset}, {protocol_packet['existence'][1] + initial_offset}, {protocol_packet['freq']}, {protocol_packet['tolerance']}).\n")
 
 patient_names = sorted(patient_names)
 service_names = sorted(service_names)
