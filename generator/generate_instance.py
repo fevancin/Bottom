@@ -49,7 +49,7 @@ def generate_operators():
                     'duration': random.randint(configuration['operator']['duration']['min'], configuration['operator']['duration']['max'])
                 }
             day[f"{prefixes['care_unit']}{care_unit_index:02}"] = care_unit
-        operators[f"{prefixes['day']}{day_index:02}"] = day
+        operators[f"{prefixes['day']}{day_index}"] = day
     return operators
 
 # services generation
@@ -115,8 +115,6 @@ def generate_interdictions():
     for service_index in range(configuration['service']['number']):
         service_interdictions = dict()
         for other_service_index in range(configuration['service']['number']):
-            if service_index == other_service_index:
-                continue
             if random.random() >= configuration['interdiction']['probability']:
                 service_interdictions[f"{prefixes['service']}{other_service_index:02}"] = 0
                 continue
