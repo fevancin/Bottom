@@ -167,30 +167,30 @@ def solve_day(day_name):
 
     def f7(model, patient_name, service_name1, service_name2):
         service_duration = services[service_name1]['duration']
-        return (model.t[patient_name, service_name1] + service_duration <= model.t[patient_name, service_name2] +
-            (2 - model.x[patient_name, service_name1] - model.x[patient_name, service_name2] +
-            model.aux1[patient_name, service_name1, service_name2]) * max_time)
+        return (model.t[patient_name, service_name1] + service_duration * model.x[patient_name, service_name1] <=
+            model.t[patient_name, service_name2] +
+            model.aux1[patient_name, service_name1, service_name2] * max_time)
     model.patient_not_overlaps1 = Constraint(model.aux1_indexes, rule=f7)
 
     def f8(model, patient_name, service_name1, service_name2):
         service_duration = services[service_name2]['duration']
-        return (model.t[patient_name, service_name2] + service_duration <= model.t[patient_name, service_name1] +
-            (3 - model.x[patient_name, service_name1] - model.x[patient_name, service_name2] -
-            model.aux1[patient_name, service_name1, service_name2]) * max_time)
+        return (model.t[patient_name, service_name2] + service_duration * model.x[patient_name, service_name2] <=
+            model.t[patient_name, service_name1] +
+            (1 - model.aux1[patient_name, service_name1, service_name2]) * max_time)
     model.patient_not_overlaps2 = Constraint(model.aux1_indexes, rule=f8)
 
     def f9(model, operator_name, patient_name1, service_name1, patient_name2, service_name2):
         service_duration = services[service_name1]['duration']
-        return (model.t[patient_name1, service_name1] + service_duration <= model.t[patient_name2, service_name2] +
-            (2 - model.chi[patient_name1, service_name1, operator_name] - model.chi[patient_name2, service_name2, operator_name] +
-            model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_time)
+        return (model.t[patient_name1, service_name1] + service_duration * model.chi[patient_name1, service_name1, operator_name] <=
+            model.t[patient_name2, service_name2] +
+            model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2] * max_time)
     model.operator_not_overlaps1 = Constraint(model.aux2_indexes, rule=f9)
 
     def f10(model, operator_name, patient_name1, service_name1, patient_name2, service_name2):
         service_duration = services[service_name2]['duration']
-        return (model.t[patient_name2, service_name2] + service_duration <= model.t[patient_name1, service_name1] +
-            (3 - model.chi[patient_name1, service_name1, operator_name] - model.chi[patient_name2, service_name2, operator_name] -
-            model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_time)
+        return (model.t[patient_name2, service_name2] + service_duration * model.chi[patient_name2, service_name2, operator_name] <=
+            model.t[patient_name1, service_name1] +
+            (1 - model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_time)
     model.operator_not_overlaps2 = Constraint(model.aux2_indexes, rule=f10)
 
     for index in model.x_indexes:
