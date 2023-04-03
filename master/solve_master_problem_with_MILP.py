@@ -145,7 +145,10 @@ def f2(model, patient_name, packet_name, window_name):
 model.x_and_epsilon = Constraint(model.epsilon_indexes, rule=f2)
 
 def f3(model, day_name, care_unit_name):
-    return (sum([model.l[patient_name, service_name, day_name] * full_input['services'][service_name]['duration'] for patient_name, service_name, day_name1 in model.l_indexes if day_name1 == day_name and full_input['services'][service_name]['careUnit'] == care_unit_name]) <= full_input['capacity'][str(day_name)][care_unit_name])
+    return (sum([model.l[patient_name, service_name, day_name] * full_input['services'][service_name]['duration']
+        for patient_name, service_name, day_name1 in model.l_indexes
+        if day_name1 == day_name and full_input['services'][service_name]['careUnit'] == care_unit_name]) <=
+        full_input['capacity'][str(day_name)][care_unit_name])
 model.respect_capacity = Constraint(model.capacity_indexes, rule=f3)
 
 def f4(model, patient_name, service_name1, service_name2, day_name):
@@ -178,6 +181,9 @@ for patient_name, service_name, day_name in impossible_assignments:
     for patient_name1, packet_name, day_name1 in model.x_indexes:
         if patient_name1 == patient_name and day_name1 == day_name and service_name in full_input['abstract_packet'][packet_name]:
             model.x[patient_name, packet_name, day_name].fix(0)
+
+# model.pprint()
+# exit(0)
 
 opt = SolverFactory('glpk')
 result = opt.solve(model)

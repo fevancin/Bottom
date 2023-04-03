@@ -47,7 +47,15 @@ def solve_day(day_name):
     packet_consistency_indexes = set()
     aux1_indexes = set()
     aux2_indexes = set()
-    max_time = 0
+    max_times = dict()
+
+    for care_unit_name, care_unit in operators[day_name].items():
+        max_time = 0
+        for operator in care_unit.values():
+            end_time = operator['start'] + operator['duration']
+            if end_time > max_time:
+                max_time = end_time
+        max_times[care_unit_name] = max_time
 
     daily_requests = requests[day_name]
 
@@ -59,7 +67,6 @@ def solve_day(day_name):
             is_packet_satisfiable = True
             temp_x_indexes = set()
             temp_chi_indexes = set()
-            temp_max_time = 0
             for service_name in packets[packet_name]:
                 is_service_satisfiable = False
                 care_unit_name = services[service_name]['careUnit']
@@ -68,8 +75,6 @@ def solve_day(day_name):
                     if service_duration <= operator['duration']:
                         is_service_satisfiable = True
                         temp_chi_indexes.add((patient_name, service_name, f"{operator_name}__{care_unit_name}"))
-                        if operator['start'] + operator['duration'] > max_time:
-                            temp_max_time = operator['start'] + operator['duration']
                 if not is_service_satisfiable:
                     is_packet_satisfiable = False
                     break
@@ -78,8 +83,6 @@ def solve_day(day_name):
                 x_indexes.update(temp_x_indexes)
                 chi_indexes.update(temp_chi_indexes)
                 packet_indexes.add((patient_name, packet_name))
-                if temp_max_time > max_time:
-                    max_time = temp_max_time
     
     if len(packet_indexes) == 0:
         return []
@@ -126,12 +129,11 @@ def solve_day(day_name):
     model.aux2 = Var(model.aux2_indexes, domain=Boolean)
 
     def f(model):
-        return (100 * sum( model.packet[patient_name, packet_name] * priorities[patient_name] for patient_name, packet_name in model.packet_indexes) - 
-            sum([model.x[patient_name, service_name] for patient_name, service_name in model.x_indexes]))
+        return sum(model.packet[patient_name, packet_name] * priorities[patient_name] for patient_name, packet_name in model.packet_indexes)
     model.objective = Objective(rule=f, sense=maximize)
 
     def f1(model, patient_name, service_name):
-        return model.t[patient_name, service_name] <= model.x[patient_name, service_name] * max_time
+        return model.t[patient_name, service_name] <= model.x[patient_name, service_name] * max_times[services[service_name]['careUnit']]
     model.t_and_x = Constraint(model.x_indexes, rule=f1)
 
     def f2(model, patient_name, service_name):
@@ -145,7 +147,7 @@ def solve_day(day_name):
     def f4(model, patient_name, service_name, compound_name):
         operator_name, care_unit_name = compound_name.split("__")
         start = operators[day_name][care_unit_name][operator_name]['start']
-        return start <= model.t[patient_name, service_name] + (1 - model.chi[patient_name, service_name, compound_name]) * max_time
+        return start * model.chi[patient_name, service_name, compound_name] <= model.t[patient_name, service_name]
     model.respect_start = Constraint(model.chi_indexes, rule=f4)
 
     def f5(model, patient_name, service_name, compound_name):
@@ -153,7 +155,7 @@ def solve_day(day_name):
         start = operators[day_name][care_unit_name][operator_name]['start']
         end = start + operators[day_name][care_unit_name][operator_name]['duration']
         service_duration = services[service_name]['duration']
-        return model.t[patient_name, service_name] + service_duration <= end + (1 - model.chi[patient_name, service_name, compound_name]) * max_time
+        return model.t[patient_name, service_name] <= (end - service_duration) * model.chi[patient_name, service_name, compound_name] + (model.x[patient_name, service_name] - model.chi[patient_name, service_name, compound_name]) * max_times[care_unit_name]
     model.respect_end = Constraint(model.chi_indexes, rule=f5)
 
     def f6(model, patient_name, packet_name, service_name):
@@ -163,25 +165,27 @@ def solve_day(day_name):
     def f7(model, patient_name, service_name1, service_name2):
         service_duration = services[service_name1]['duration']
         return (model.t[patient_name, service_name1] + service_duration * model.x[patient_name, service_name1] <= model.t[patient_name, service_name2] +
-            (model.aux1[patient_name, service_name1, service_name2]) * max_time)
+            (1 - model.aux1[patient_name, service_name1, service_name2]) * max_times[services[service_name1]['careUnit']])
     model.patient_not_overlaps1 = Constraint(model.aux1_indexes, rule=f7)
 
     def f8(model, patient_name, service_name1, service_name2):
         service_duration = services[service_name2]['duration']
         return (model.t[patient_name, service_name2] + service_duration * model.x[patient_name, service_name2] <= model.t[patient_name, service_name1] +
-            (1 - model.aux1[patient_name, service_name1, service_name2]) * max_time)
+            model.aux1[patient_name, service_name1, service_name2] * max_times[services[service_name2]['careUnit']])
     model.patient_not_overlaps2 = Constraint(model.aux1_indexes, rule=f8)
 
     def f9(model, operator_name, patient_name1, service_name1, patient_name2, service_name2):
         service_duration = services[service_name1]['duration']
+        _, care_unit_name = operator_name.split("__")
         return (model.t[patient_name1, service_name1] + service_duration * model.chi[patient_name1, service_name1, operator_name] <= model.t[patient_name2, service_name2] +
-            (model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_time)
+            (1 - model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_times[care_unit_name])
     model.operator_not_overlaps1 = Constraint(model.aux2_indexes, rule=f9)
 
     def f10(model, operator_name, patient_name1, service_name1, patient_name2, service_name2):
         service_duration = services[service_name2]['duration']
+        _, care_unit_name = operator_name.split("__")
         return (model.t[patient_name2, service_name2] + service_duration * model.chi[patient_name2, service_name2, operator_name] <= model.t[patient_name1, service_name1] +
-            (1 - model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2]) * max_time)
+            model.aux2[operator_name, patient_name1, service_name1, patient_name2, service_name2] * max_times[care_unit_name])
     model.operator_not_overlaps2 = Constraint(model.aux2_indexes, rule=f10)
 
     # if day_name == "12":
