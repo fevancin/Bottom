@@ -108,10 +108,33 @@ with open(filenames['master']['ASP_output_program'], "r") as file:
         requests[day_name][tokens[0]].append(tokens[1])
 
 # removing of temporary files
-if os.path.isfile(filenames['master']['ASP_input_program']):
-    os.remove(filenames['master']['ASP_input_program'])
-if os.path.isfile(filenames['master']['ASP_output_program']):
-    os.remove(filenames['master']['ASP_output_program'])
+# if os.path.isfile(filenames['master']['ASP_input_program']):
+#     os.remove(filenames['master']['ASP_input_program'])
+# if os.path.isfile(filenames['master']['ASP_output_program']):
+#     os.remove(filenames['master']['ASP_output_program'])
+
+# TEMPORARY CODE _______________________________________________________________
+# import random
+# random.seed(42)
+
+# requests = dict()
+# packet_names = []
+# for packet_name in full_input['abstract_packet'].keys():
+#     packet_names.append(packet_name)
+# patient_names = []
+# for patient_name in full_input['pat_request'].keys():
+#     patient_names.append(patient_name)
+# for day_name in full_input['daily_capacity'].keys():
+#     daily_requests = dict()
+#     patient_number = random.randint(1, 5)
+#     for patient_index in range(patient_number):
+#         packet_number = random.randint(1, 2)
+#         daily_requests[patient_names[patient_index]] = {
+#             'packets': random.sample(packet_names, packet_number)
+#         }
+#         daily_requests[patient_names[patient_index]]['packets'].sort()
+#     requests[day_name] = daily_requests
+# END OF TEMPORARY CODE ________________________________________________________
 
 # writing of the requests file
 with open(filenames['master']['output_file'], "w") as file:
