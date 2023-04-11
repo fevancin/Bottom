@@ -100,18 +100,20 @@ with open(filenames['master']['ASP_output_program'], "r") as file:
     for row in rows:
         tokens = row.split(",")
         tokens[2] = tokens[2][:-2]
-        day_name = f"{int(tokens[2]):02}"
+        day_name = f"{int(tokens[2])}"
         if day_name not in requests:
             requests[day_name] = dict()
         if tokens[0] not in requests[day_name]:
-            requests[day_name][tokens[0]] = []
-        requests[day_name][tokens[0]].append(tokens[1])
+            requests[day_name][tokens[0]] = {
+                'packets': []
+            }
+        requests[day_name][tokens[0]]['packets'].append(tokens[1])
 
 # removing of temporary files
-# if os.path.isfile(filenames['master']['ASP_input_program']):
-#     os.remove(filenames['master']['ASP_input_program'])
-# if os.path.isfile(filenames['master']['ASP_output_program']):
-#     os.remove(filenames['master']['ASP_output_program'])
+if os.path.isfile(filenames['master']['ASP_input_program']):
+    os.remove(filenames['master']['ASP_input_program'])
+if os.path.isfile(filenames['master']['ASP_output_program']):
+    os.remove(filenames['master']['ASP_output_program'])
 
 # TEMPORARY CODE _______________________________________________________________
 # import random

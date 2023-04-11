@@ -14,7 +14,7 @@ with open("filenames.json", "r") as file:
     filenames = json.loads(file.read())
 
 # reading of the operators file
-if not os.path.isdir(os.path.join("..", filenames['instance']['folder'])):
+if not os.path.isdir(filenames['instance']['folder']):
     raise FileNotFoundError("The instance folder was not found")
 os.chdir(filenames['instance']['folder'])
 if not os.path.isfile(filenames['instance']['operators']):

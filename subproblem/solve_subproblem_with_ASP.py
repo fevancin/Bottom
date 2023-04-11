@@ -86,7 +86,7 @@ for day_name, daily_requests in requests.items():
                 file.write(f"operator({operator_name}, {care_unit_name}, {operator['start']}, {operator['duration']}).\n")
 
     with open(filenames['subproblem']['ASP_input_program'], "a") as file:
-        file.write(f"time(0..{max_time}).\n")
+        file.write(f"time(0..{max_time - 1}).\n")
 
     # solve subproblem problem
     with open(filenames['subproblem']['ASP_output_program'], "w") as file:
