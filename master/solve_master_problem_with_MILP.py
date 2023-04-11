@@ -63,6 +63,8 @@ for patient_name, patient in full_input['pat_request'].items():
                     min_day = 10000
                     max_day = -10000
                     for day_name in range(perfect_day - protocol_packet['tolerance'], perfect_day + protocol_packet['tolerance'] + 1):
+                        if day_name >= full_input['horizon']:
+                            continue
                         if day_name < protocol_packet['existence'][0] or day_name > protocol_packet['existence'][1]:
                             continue
                         is_packet_assignable = True
