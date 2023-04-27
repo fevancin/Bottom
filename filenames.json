@@ -19,33 +19,30 @@
     },
     "master": {
         "folder": "master",
-        "ASP_program": "master_problem_program.lp",
+        "ASP_program": "program.lp",
         "ASP_input_program": "input_program.lp",
         "ASP_output_program": "output_program.txt",
-        "ASP_script": "solve_master_problem_with_ASP.py",
-        "MILP_script": "solve_master_problem_with_MILP.py",
+        "ASP_script": "solve_with_ASP.py",
+        "MILP_script": "solve_with_MILP.py",
         "output_file": "requests.json"
     },
     "subproblem": {
         "folder": "subproblem",
-        "ASP_program": "subproblem_program.lp",
+        "ASP_program": "program.lp",
         "ASP_input_program": "input_program.lp",
         "ASP_output_program": "output_program.txt",
-        "ASP_script": "solve_subproblem_with_ASP.py",
-        "MILP_script": "solve_subproblem_with_MILP.py",
-        "greedy_MILP_script": "solve_subproblem_with_greedy_MILP.py",
+        "ASP_script": "solve_with_ASP.py",
+        "MILP_script": "solve_with_MILP.py",
+        "greedy_MILP_script": "solve_with_greedy_MILP.py",
         "output_file": "results.json"
     },
     "subsumptions": {
         "folder": "subsumptions",
-        "ASP_program": "subsumptions_program.lp",
+        "ASP_program": "program.lp",
         "ASP_input_program": "input_program.lp",
         "ASP_output_program": "output_program.txt",
-        "ASP_script": "compute_subsumptions_with_ASP.py",
-        "MILP_script": "compute_subsumptions_with_MILP.py",
+        "ASP_script": "compute_with_ASP.py",
+        "MILP_script": "compute_with_MILP.py",
         "output_file": "subsumptions.json"
-    },
-    "main": {
-        "script": "main_script.py"
     }
 }
