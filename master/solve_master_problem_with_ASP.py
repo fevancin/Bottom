@@ -85,7 +85,7 @@ with open(filenames['master']['ASP_input_program'], "a") as file:
             file.write(f"service_has_necessity_of({service_name}, {other_service_name}, {window[0]}, {window[1]}).\n")
 
 with open(filenames['master']['ASP_input_program'], "a") as file:
-    file.write(f"day(0..{full_input['horizon']}).\n")
+    file.write(f"day(0..{full_input['horizon'] - 1}).\n")
 
 # solve master problem
 with open(filenames['master']['ASP_output_program'], "w") as file:
